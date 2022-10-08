@@ -1,24 +1,14 @@
-# av-record
+# LEV录屏
+vue3.2 + electron + naiveUI开发的一款录屏软件
 
-## Project setup
-```
+## 安装依赖
 npm install
-```
 
-### Compiles and hot-reloads for development
-```
+## 启动网页
 npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 启动electron
+npm run electron:serve
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 打包electron
+npm run electron:build
