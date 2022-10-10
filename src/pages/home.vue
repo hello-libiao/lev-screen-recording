@@ -18,8 +18,14 @@
                     :data="files"
                     :pagination="pagination"
                     :bordered="false"
-                    :max-height="250"
-                  />
+                    :max-height="250">
+                  <template #empty>
+                      <NIcon size="18" style="margin-right:8px">
+                        <FolderRegular />
+                      </NIcon>
+                      <p>暂无数据</p>
+                  </template>
+                  </NDataTable>
                   <!-- <div class="video-item" v-for="item in files" :key="item">
                     <p class="item-opt name">{{item}}</p>
                     <NButton @click="handlePlay(item)">播放</NButton>
@@ -42,7 +48,8 @@
 import { ref, h } from 'vue'
 import { saveVideo, directoryFiles } from '../utils/helper'
 import Layer from '../components/Layer.vue'
-import { NButton, NDataTable } from 'naive-ui'
+import { NButton, NDataTable, NIcon } from 'naive-ui'
+import { FolderRegular } from '@vicons/fa'
 const { ipcRenderer } = window.require('electron')
 
 // 发送给主进程事件，再定义响应事件
@@ -140,10 +147,10 @@ const sourceStart = async () => {
       mandatory: {
         chromeMediaSource: 'desktop',
         chromeMediaSourceId: source.id,
-        minWidth: 1280,
-        maxWidth: 1280,
-        minHeight: 720,
-        maxHeight: 720
+        minWidth: 1920,
+        maxWidth: 1920,
+        minHeight: 1080,
+        maxHeight: 1080
       }
     }
   })
@@ -195,7 +202,10 @@ const pagination = false
 const columns = [
   {
     title: '文件名',
-    key: 'fileName'
+    key: 'fileName',
+    ellipsis: {
+      tooltip: true
+    }
   },
   {
     title: '操作',
