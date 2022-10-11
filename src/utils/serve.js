@@ -3,12 +3,15 @@ const path = require('path')
 const http = require('http')
 const url = require('url')
 const fs = require('fs')
+const os = require('os')
+// 判断是否为macos环境，修改存储路径
+const VIDEO_MACORWIN_PATH = os.platform() === 'darwin' ? os.homedir() + '/Documents/lev' : VIDEO_PATH
 
 // 启动本地服务
 export const httpServer = () => {
   const server = http.createServer((req, res) => {
     const pathName = req.url
-    const realPath = path.join(VIDEO_PATH, pathName)
+    const realPath = path.join(VIDEO_MACORWIN_PATH, pathName)
     fs.readFile(realPath, (err, data) => {
       if (err) {
         res.writeHead(404, {
