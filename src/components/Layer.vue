@@ -98,7 +98,7 @@ export default {
         display:block;
         width:30px;
         height:30px;
-        background:url('../assets/images/record-img.png') no-repeat center;
+        background:url('../assets/images/logo.png') no-repeat center;
         background-size:contain;
         margin-right:10px;
       }
