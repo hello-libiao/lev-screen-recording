@@ -1,48 +1,36 @@
-<script>
-import { ref } from 'vue'
+<script setup>
+import { ref, defineProps } from 'vue'
 const { ipcRenderer } = window.require('electron')
-export default {
-  name: 'Layer',
-  props: {
-    pageTitle: {
-      type: String,
-      default: 'LEV录屏'
-    }
-  },
-  setup () {
-    const handleDrag = (pos) => {
-      ipcRenderer.send('move-home', {
-        baseX: pos.x,
-        baseY: pos.y
-      })
-    }
-
-    // 最小化
-    const minWin = function () {
-      ipcRenderer.send('homeWin:minimize')
-    }
-    // 最大化
-    const isMax = ref(false)
-    const maxWin = function () {
-      if (isMax.value) {
-        ipcRenderer.send('homeWin:restore')
-      } else {
-        ipcRenderer.send('homeWin:maximize')
-      }
-      isMax.value = !isMax.value
-    }
-    // 关闭
-    const closeWin = function () {
-      ipcRenderer.send('homeWin:close')
-    }
-    return {
-      isMax,
-      handleDrag,
-      minWin,
-      maxWin,
-      closeWin
-    }
+const props = defineProps({
+  pageTitle: {
+    type: String,
+    default: 'LEV录屏'
   }
+})
+const handleDrag = (pos) => {
+  ipcRenderer.send('move-home', {
+    baseX: pos.x,
+    baseY: pos.y
+  })
+}
+
+// 最小化
+const minWin = function () {
+  ipcRenderer.send('homeWin:minimize')
+}
+// 最大化
+const isMax = ref(false)
+const maxWin = function () {
+  if (isMax.value) {
+    ipcRenderer.send('homeWin:restore')
+  } else {
+    ipcRenderer.send('homeWin:maximize')
+  }
+  isMax.value = !isMax.value
+}
+// 关闭
+const closeWin = function () {
+  ipcRenderer.send('homeWin:close')
 }
 </script>
 <template>

@@ -46,7 +46,7 @@
 </template>
 <script setup>
 import { ref, h } from 'vue'
-import { saveVideo, directoryFiles } from '../utils/helper'
+import { saveVideo, directoryFiles, timeFormat } from '../utils/helper'
 import Layer from '../components/Layer.vue'
 import { NButton, NDataTable, NIcon } from 'naive-ui'
 import { FolderRegular } from '@vicons/fa'
@@ -82,10 +82,7 @@ const countDown = () => {
 }
 
 const transTime = (time) => {
-  const h = Math.floor(time / 3600) < 10 ? '0' + Math.floor(time / 3600) : Math.floor(time / 3600)
-  const m = Math.floor((time / 60) % 60) < 10 ? '0' + Math.floor((time / 60) % 60) : Math.floor((time / 60) % 60)
-  const s = Math.floor(time % 60) < 10 ? '0' + Math.floor(time % 60) : Math.floor(time % 60)
-  return `${h}:${m}:${s}`
+  return timeFormat(time)
 }
 
 const recorder = ref(null)
@@ -133,12 +130,20 @@ const recordStart = (stream) => {
 // 获取流
 const sourceStart = async () => {
   // 判断是否录制，如果录制中调用停止
-  if (isRecord.value) {
-    timer.value && clearTimeout(timer.value)
-    timestamp.value = 0
-    recorder.value && recorder.value.stop()
+  if (!isRecord.value) {
+    ipcRenderer.send('startRecord')
     return
   }
+  ipcRenderer.send('stopRecord')
+}
+
+ipcRenderer.on('record-stop', () => {
+  timer.value && clearTimeout(timer.value)
+  timestamp.value = 0
+  recorder.value && recorder.value.stop()
+})
+
+ipcRenderer.on('record-start', async () => {
   const source = await getSource()
   // 获取流
   const stream = await navigator.mediaDevices.getUserMedia({
@@ -162,7 +167,7 @@ const sourceStart = async () => {
   } else {
     recordStart(stream)
   }
-}
+})
 
 // 获取麦克风音频或者系统音频方法
 const getDisplayMediaSource = async () => {

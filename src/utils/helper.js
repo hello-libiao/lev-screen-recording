@@ -71,3 +71,10 @@ export const directoryFiles = () => {
   }))
   return newObj
 }
+
+export const timeFormat = (time) => {
+  const h = Math.floor(time / 3600) < 10 ? '0' + Math.floor(time / 3600) : Math.floor(time / 3600)
+  const m = Math.floor((time / 60) % 60) < 10 ? '0' + Math.floor((time / 60) % 60) : Math.floor((time / 60) % 60)
+  const s = Math.floor(time % 60) < 10 ? '0' + Math.floor(time % 60) : Math.floor(time % 60)
+  return `${h}:${m}:${s}`
+}

@@ -2,12 +2,13 @@
 import { app, ipcMain, screen, desktopCapturer, shell } from 'electron'
 import StartUp from './wins/startup'
 import Home from './wins/home'
+import Suspend from './wins/suspend'
 import {
-  BASE_WIN_WIDTH,
+  // BASE_WIN_WIDTH,
   BASE_WIN_HEIGHT,
-  DESIGEN_STARTUP_WIDTH,
-  DESIGEN_STARTUP_HEIGHT,
-  DESIGEN_HOME_WIDTH,
+  // DESIGEN_STARTUP_WIDTH,
+  // DESIGEN_STARTUP_HEIGHT,
+  // DESIGEN_HOME_WIDTH,
   DESIGEN_HOME_HEIGHT,
   VIDEO_PATH
 } from './utils/constant'
@@ -26,14 +27,17 @@ const getSize = () => {
   }
 }
 
+let home, suspend
+
 app.on('ready', async () => {
   const rect = screen.getPrimaryDisplay().bounds
   // 启动页宽高
-  const startupW = (rect.width / BASE_WIN_WIDTH) * DESIGEN_STARTUP_WIDTH
-  const startupH = (rect.height / BASE_WIN_HEIGHT) * DESIGEN_STARTUP_HEIGHT
+  // const startupW = (rect.width / BASE_WIN_WIDTH) * DESIGEN_STARTUP_WIDTH
+  // const startupH = (rect.height / BASE_WIN_HEIGHT) * DESIGEN_STARTUP_HEIGHT
   // 主页面宽高
   // const homeW = (rect.width / BASE_WIN_WIDTH) * DESIGEN_HOME_WIDTH
   const homeH = (rect.height / BASE_WIN_HEIGHT) * DESIGEN_HOME_HEIGHT
+
   const startupPage = new StartUp({
     width: 300,
     height: 200
@@ -41,8 +45,13 @@ app.on('ready', async () => {
   startupPage.on('show', () => {
     console.log('启动页启动了')
     httpServer()
+    suspend = new Suspend({
+      width: 80,
+      height: 80
+    })
+
     setTimeout(() => {
-      const home = new Home({
+      home = new Home({
         width: 1200,
         height: homeH
       })
@@ -51,6 +60,16 @@ app.on('ready', async () => {
       })
     }, 3000)
   })
+})
+
+ipcMain.on('startRecord', () => {
+  home.getWebcontents().send('record-start')
+  suspend.getWebcontents().send('record-start')
+})
+
+ipcMain.on('stopRecord', () => {
+  home.getWebcontents().send('record-stop')
+  suspend.getWebcontents().send('record-stop')
 })
 
 ipcMain.on('directory-open', (event, data) => {
